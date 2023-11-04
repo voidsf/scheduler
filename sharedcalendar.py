@@ -17,8 +17,29 @@ class Event:
         return self.__end
 
     def __init__(self, name: str, start: datetime.datetime, end: datetime.datetime):
+        """Initialises the Event class
+
+        Args:
+            name (str): The name of the event
+            start (datetime.datetime): The start date and time of the event
+            end (datetime.datetime): The end date and time of the event
+
+        Raises:
+            TypeError: If the name argument is not a string
+            TypeError: If the start argument is not a datetime
+            TypeError: If the end argument is not a datetime
+        """              
+        
+        if not isinstance(name, str):
+            raise TypeError(f"Name must be a string, not {type(name)}")
         self.__name = name
+        
+        if not isinstance(start, datetime.datetime):
+            raise TypeError(f"Start must be a datetime, not {type(start)}")
         self.__start = start
+        
+        if not isinstance(end, datetime.datetime):
+            raise TypeError(f"End must be a datetime, not {type(end)}")
         self.__end = end
 
     def __repr__(self) -> str:
@@ -155,7 +176,7 @@ class EventSet(set):
     """
 
     def __init__(self, events: abc.Iterable=list()):
-        """_summary_
+        """Initialises the EventSet class
 
         Args:
             events (abc.Iterable, optional): An iterable of events. Defaults to list().
@@ -232,20 +253,42 @@ class SharedCalendar(calendar.Calendar):
         return f"{self.name}:\n" + '\n'.join(event_string)
     
     def add_event(self, event: Event):
+        """Adds the event given to the calendar.
+
+        Args:
+            event (Event): The event to be added to the calendar
+
+        Raises:
+            TypeError: If the event argument is not an Event
+        """        
         if not isinstance(event, Event):
             raise TypeError(f"Event must be an Event, not {type(event)}")
         
         self.__events.add(event)
 
     def remove_event(self, event: Event):
+        """Removes the event given from the calendar, if it exists.
+
+        Args:
+            event (Event): The event to be removed from the calendar
+        """        
         self.__events.discard(event)
 
     def events_between(self, start: datetime.datetime, end: datetime.datetime) -> list:
         """Returns a list of events that occur between the start and end times given.
+
+        Args:
+            start (datetime.datetime): The start time of the time span to find events in.
+            end (datetime.datetime): The end time of the time span.
+
+        Returns:
+            list: The list of events in the time span
         
         >>> e = SharedCalendar("Sam's Calendar", {Event('Tennis with Frank', datetime.datetime(2020,1,1), datetime.datetime(2020,1,2)), Event('Tennis with Frank 2', datetime.datetime(2020,1,3), datetime.datetime(2020,1,4))})
+        
         >>> e.events_between(datetime.datetime(2019,12,31), datetime.datetime(2020,1,1,6))
-        [Event(name=Tennis with Frank, start=2020-01-01 00:00:00, end=2020-01-02 00:00:00)]"""
+        [Event(name=Tennis with Frank, start=2020-01-01 00:00:00, end=2020-01-02 00:00:00)]
+        """
         return [event for event in self.__events if 
                 start <= event.start < end
                 or start < event.end <= end
