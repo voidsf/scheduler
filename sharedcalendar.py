@@ -323,7 +323,7 @@ class SharedCalendar(calendar.Calendar):
 		>>> e.has_conflicts()
 		True
 		"""	
-  	      
+  		  
 		return any(bool([e for e in self.events_between(event.start, event.end) if e != event]) for event in self.events)
 		
 	
