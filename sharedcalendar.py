@@ -252,7 +252,7 @@ class SharedCalendar(calendar.Calendar):
         event_string = [str(event) for event in sorted(self.__events)] #Sorts the events by start time
         return f"{self.name}:\n" + '\n'.join(event_string)
     
-    def add_event(self, event: Event):
+    def add_event(self, event: Event) -> None:
         """Adds the event given to the calendar.
 
         Args:
@@ -266,29 +266,43 @@ class SharedCalendar(calendar.Calendar):
         
         self.__events.add(event)
 
-    def remove_event(self, event: Event):
+    def remove_event(self, event: Event) -> None:
         """Removes the event given from the calendar, if it exists.
 
         Args:
             event (Event): The event to be removed from the calendar
+
+        Raises:
+            TypeError: If the event argument is not an Event
         """        
+        if not isinstance(event, Event):
+            raise TypeError(f"Event must be an Event, not {type(event)}")
+        
         self.__events.discard(event)
 
-    def events_between(self, start: datetime.datetime, end: datetime.datetime) -> list:
-        """Returns a list of events that occur between the start and end times given.
+    def events_between(self, start: datetime.datetime, end: datetime.datetime) -> list[Event]:
+        """
+        Returns a list of events that occur between the start and end times given.
 
         Args:
             start (datetime.datetime): The start time of the time span to find events in.
             end (datetime.datetime): The end time of the time span.
 
         Returns:
-            list: The list of events in the time span
-        
+            list[Event]: The list of events in the time span
+
+        Raises:
+            TypeError: If start or end is not a datetime.datetime object.
+
         >>> e = SharedCalendar("Sam's Calendar", {Event('Tennis with Frank', datetime.datetime(2020,1,1), datetime.datetime(2020,1,2)), Event('Tennis with Frank 2', datetime.datetime(2020,1,3), datetime.datetime(2020,1,4))})
         
         >>> e.events_between(datetime.datetime(2019,12,31), datetime.datetime(2020,1,1,6))
         [Event(name=Tennis with Frank, start=2020-01-01 00:00:00, end=2020-01-02 00:00:00)]
         """
+        if not isinstance(start, datetime.datetime):
+            raise TypeError(f"start must be a datetime.datetime, not {type(start)}")
+        if not isinstance(end, datetime.datetime):
+            raise TypeError(f"end must be a datetime.datetime, not {type(end)}")
         return [event for event in self.__events if 
                 start <= event.start < end
                 or start < event.end <= end
@@ -300,7 +314,7 @@ if __name__ == "__main__":
     import doctest
     doctest.testmod()
 
-    e = SharedCalendar("Sam's Calendar", {Event('Tennis with Frank', datetime.datetime(2020,1,1), datetime.datetime(2020,1,2)), Event('Tennis with Frank 2', datetime.datetime(2020,1,3), datetime.datetime(2020,1,4))})
+    e = SharedCalendar("Sam's Calendar", {Event('Tennis with Frank', datetime.datetime(2020,1,1), datetime.datetime(2020,1,2)), Event('Tennis with Dave', datetime.datetime(2020,1,3), datetime.datetime(2020,1,4))})
 
     print(e)
 
