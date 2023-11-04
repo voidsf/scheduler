@@ -3,7 +3,7 @@ import datetime
 from typing import Any
 from collections import abc
 
-class Event:
+class Event:   
     @property
     def name(self) -> str:
         return self.__name
@@ -155,8 +155,15 @@ class EventSet(set):
     """
 
     def __init__(self, events: abc.Iterable=list()):
-        """Initialises the EventSet class, which is a set of Events. It must be instantiated with an iterable of Events, if not, returning a TypeError.
-        
+        """_summary_
+
+        Args:
+            events (abc.Iterable, optional): An iterable of events. Defaults to list().
+
+        Raises:
+            TypeError: If events is not an iterable
+            TypeError: If any item in iterable events is not an Event
+                
         >>> e = EventSet(20)
         Traceback (most recent call last):
         ...
@@ -188,8 +195,28 @@ class SharedCalendar(calendar.Calendar):
         return self.__events
 
     def __init__(self, name: str='', events: abc.Iterable=list()):
+        """Initialises the SharedCalendar class, which is a calendar that stores Events. It must be instantiated with an iterable of Events, if not, returning a TypeError.
+
+        Args:
+            name (str, optional): The name of the SharedCalendar object. Defaults to ''.
+            events (abc.Iterable, optional): An iterable filled with events to be added to the calendar. Defaults to list().
+
+        Raises:
+            TypeError: If the name argument is not a string, or if the events argument is not an iterable.
+            
+        >>> e = SharedCalendar(20, [])
+        Traceback (most recent call last):
+        ...
+        TypeError: Name must be a string, not <class 'int'>
+        
+        >>> e = SharedCalendar('calendar', 1)
+        Traceback (most recent call last):
+        ...
+        TypeError: Events must be an iterable, not <class 'int'>"""        
         super().__init__()
         
+        if not isinstance(name, str):
+            raise TypeError(f"Name must be a string, not {type(name)}")
         self.name = name
 
         if not isinstance(events, abc.Iterable):
