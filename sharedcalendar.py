@@ -325,6 +325,7 @@ class SharedCalendar(calendar.Calendar):
 		"""	
   		  
 		return any(bool([e for e in self.events_between(event.start, event.end) if e != event]) for event in self.events)
+		#this could use refactoring probably to get it speedier
 		
 	
 
